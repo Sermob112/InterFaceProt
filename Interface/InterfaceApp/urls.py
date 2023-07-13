@@ -4,7 +4,7 @@ from . import views
 from .views import *
 
 urlpatterns = [
-    path('',index),
+    path('',index,name='index'),
     # URL для страницы входа (login)
     # path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
 

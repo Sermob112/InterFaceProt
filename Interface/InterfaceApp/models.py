@@ -13,7 +13,7 @@ class DataPoint(models.Model):
 
     def __str__(self):
         return f"DataPoint ({self.x}, {self.y})"
-
+#Роли
 class Role(models.Model):
     name = models.CharField(max_length=100, unique=True)
 

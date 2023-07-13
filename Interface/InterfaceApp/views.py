@@ -1,6 +1,7 @@
 
 
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import views as auth_views, login
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -12,7 +13,7 @@ from .models import DataPoint
 
 
 
-# from chartjs.views.lines import BaseLineChartView
+
 def register(request):
     if request.method == 'POST':
 
@@ -29,15 +30,14 @@ def register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
-# Create your views here.
+
 def index(request):
     return render(request, 'base.html')
 
-
-def custom_logout(request):
-    # Redirect to a specific page after logout
-    return auth_views.LogoutView.as_view(next_page='index')(request)
-
+# def custom_logout(request):
+#     # Redirect to a specific page after logout
+#     return auth_views.LogoutView.as_view(next_page='index')(request)
+#График
 def chart_view(request):
     data_points = DataPoint.objects.all()
     return render(request, 'chart.html', {'data_points': data_points})
@@ -61,19 +61,6 @@ def chart_view(request):
 #
 #     return JsonResponse(chart_data)
 
-# def chart_view(request):
-#     return render(request, 'template.html', {'chart_data': chart_data(request)})
-
-# def chart_view(request):
-#     data_points = DataPoint.objects.all()
-#     return render(request, 'template.html', {'data_points': data_points})
-
-# def is_director(user):
-#     return user.role == Role.objects.get(name='Директор')
-#
-# @user_passes_test(is_director)
-# def director_dashboard(request):
-#     return render(request, 'director_dashboard.html')
 
 @login_required
 @user_passes_test(lambda user: user.role.name == 'Директор')
@@ -97,11 +84,30 @@ def worker_view(request):
     # Ваша логика для представления работника
     return render(request, 'worker.html')
 
+# def custom_login(request):
+#     if request.user.is_authenticated:
+#         return redirect('index')  # Redirect authenticated users to a specific page if needed.
+#     else:
+#         return auth_views.LoginView.as_view(template_name='login.html')(request)
+
 def custom_login(request):
     if request.user.is_authenticated:
-        return redirect('index')  # Redirect authenticated users to a specific page if needed.
-    else:
-        return auth_views.LoginView.as_view(template_name='login.html')(request)
+        return redirect('index')  # Перенаправление на стартовую страницу, если пользователь уже авторизован
 
+    # Обработка отправки формы авторизации
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            next_url = request.POST.get('next')
+            if next_url:
+                return redirect(next_url)  # Перенаправление на URL из параметра next
+            else:
+                return redirect('index')  # Перенаправление на стартовую страницу, если параметр next не указан
+
+    else:
+        form = AuthenticationForm(request)
+
+    return render(request, 'login.html', {'form': form})
 def custom_logout(request):
     return auth_views.LogoutView.as_view()(request)
