@@ -1,0 +1,17 @@
+asgiref==3.7.2
+contourpy==1.1.0
+cycler==0.11.0
+Django==4.2.2
+django-chartjs==2.3.0
+fonttools==4.40.0
+kiwisolver==1.4.4
+matplotlib==3.7.1
+numpy==1.25.0
+packaging==23.1
+Pillow==9.5.0
+psycopg2==2.9.6
+pyparsing==3.1.0
+python-dateutil==2.8.2
+six==1.16.0
+sqlparse==0.4.4
+tzdata==2023.3

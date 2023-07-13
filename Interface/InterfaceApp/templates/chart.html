@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Линейный график</title>
+</head>
+<body>
+    <div style="width: 80%; margin: auto;">
+        <canvas id="myLineChart"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Здесь будут данные точек из Python
+        var xValues = [];
+        var yValues = [];
+        {% for data_point in data_points %}
+            xValues.push({{ data_point.x }});
+            yValues.push({{ data_point.y }});
+        {% endfor %}
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('myLineChart').getContext('2d');
+            var myLineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        label: 'Линейный график',
+                        data: yValues,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom'
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
